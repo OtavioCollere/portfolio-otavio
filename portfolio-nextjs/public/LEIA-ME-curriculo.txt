@@ -1,0 +1,8 @@
+Coloque aqui o seu currículo em PDF com o nome exato:
+
+    curriculo.pdf
+
+O caminho final será  public/curriculo.pdf  e o botão "Baixar CV" do site
+aponta para  /curriculo.pdf  automaticamente.
+
+(Este arquivo .txt pode ser apagado depois.)

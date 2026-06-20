@@ -1,0 +1,74 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #14161b;
+}
+
+* {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 88px;
+}
+
+body {
+  background-color: var(--bg);
+  color: #e8eaed;
+}
+
+/* Selection */
+::selection {
+  background: rgba(52, 211, 153, 0.25);
+  color: #ffffff;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 11px;
+}
+::-webkit-scrollbar-track {
+  background: #14161b;
+}
+::-webkit-scrollbar-thumb {
+  background: #2b313b;
+  border-radius: 999px;
+  border: 3px solid #14161b;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #353c47;
+}
+
+/* Visible keyboard focus ring (accessibility) */
+:focus-visible {
+  outline: 2px solid #34d399;
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Subtle dotted grid used as a tech detail */
+.tech-grid {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+.no-scroll {
+  overflow: hidden;
+}
