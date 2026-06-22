@@ -50,18 +50,22 @@ const SPEED = 0.008; // cards por frame a 60fps → ~0.48 cards/s, ida e volta e
 export default function Stack() {
   // useReducedMotion retorna null no servidor — usar false como valor inicial
   // garante que servidor e cliente rendam o mesmo HTML antes da hidratação.
-  const [reduce, setReduce] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
+  // Lazy init lê matchMedia já no primeiro render (componente é client-only via ssr:false)
+  // evita o flash do layout 3D em mobile antes do effect corrigir o estado.
+  const [reduce, setReduce] = useState(
+    () => typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  );
+  const [isMobile, setIsMobile] = useState(
+    () => typeof window !== "undefined" && window.matchMedia("(max-width: 767px)").matches
+  );
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setReduce(mq.matches);
     const handler = (e: MediaQueryListEvent) => setReduce(e.matches);
     mq.addEventListener("change", handler);
     return () => mq.removeEventListener("change", handler);
   }, []);
   useEffect(() => {
     const mq = window.matchMedia("(max-width: 767px)");
-    setIsMobile(mq.matches);
     const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
     mq.addEventListener("change", handler);
     return () => mq.removeEventListener("change", handler);
@@ -110,7 +114,7 @@ export default function Stack() {
     return () => {
       if (rafRef.current !== undefined) cancelAnimationFrame(rafRef.current);
     };
-  }, [reduce, total]);
+  }, [reduce, isMobile, total]);
 
   const go = (i: number) => {
     targetRef.current = Math.max(0, Math.min(total - 1, i));
