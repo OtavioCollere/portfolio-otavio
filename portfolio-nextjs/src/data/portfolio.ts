@@ -375,6 +375,41 @@ export const projects: Project[] = [
     ],
     repo: "",
   },
+
+  {
+    id: "reactivate-cliniker",
+    title: "Reactivate Cliniker — Agente de Reativação via WhatsApp",
+    tagline: "Automatiza a identificação de pacientes inativos e o envio de mensagens personalizadas com IA.",
+    description:
+      "Agente Python que roda diariamente via cron, busca pacientes inativos no sistema SaaS da clínica, gera mensagens personalizadas com OpenAI (mencionando o último procedimento e histórico de visitas) e envia via WhatsApp através da Evolution API. Deduplicação via PostgreSQL evita reenvios.",
+    challenge:
+      "Clínicas de estética perdem receita recorrente quando não fazem acompanhamento de pacientes sumidos. O processo manual é repetitivo, demorado e raramente acontece com consistência.",
+    solution: [
+      "Arquitetura em camadas (adapters / agent / services) com responsabilidades isoladas e substituíveis.",
+      "Autenticação com saas-clinic via cookie HttpOnly — extrai o JWT do Set-Cookie e reutiliza como Bearer token.",
+      "Cache de procedimentos por franquia (O(1)) para evitar N+1 nas chamadas de API.",
+      "Seletor com priorização: mais inativo primeiro, depois mais fiel — via ordenação composta.",
+      "DRY_RUN=true por padrão: testa o fluxo completo (incluindo OpenAI) sem risco de envio acidental.",
+      "Deduplicação por PostgreSQL: exclui telefones contatados nos últimos 30 dias antes de selecionar.",
+    ],
+    results: [
+      "Geração de mensagens contextualizada funcionando com dados mock — integração com SaaS em validação.",
+      "Fluxo end-to-end testável localmente sem dependências externas além de Docker e chave OpenAI.",
+      "Deploy desenhado para Railway com cron diário sem servidor persistente.",
+    ],
+    tech: [
+      "Python 3.11",
+      "OpenAI GPT-4o-mini",
+      "Pydantic v2",
+      "PostgreSQL",
+      "httpx",
+      "Evolution API",
+      "Google Sheets",
+      "Railway",
+      "Docker",
+    ],
+    repo: "https://github.com/OtavioCollere/reactivate-cliniker",
+  },
 ];
 
 /* -------------------------------------------------------------------------- */

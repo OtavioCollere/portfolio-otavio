@@ -51,10 +51,18 @@ export default function Stack() {
   // useReducedMotion retorna null no servidor — usar false como valor inicial
   // garante que servidor e cliente rendam o mesmo HTML antes da hidratação.
   const [reduce, setReduce] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
     setReduce(mq.matches);
     const handler = (e: MediaQueryListEvent) => setReduce(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    setIsMobile(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
     mq.addEventListener("change", handler);
     return () => mq.removeEventListener("change", handler);
   }, []);
@@ -68,7 +76,10 @@ export default function Stack() {
   const [offset, setOffset] = useState(offsetRef.current);
 
   useEffect(() => {
-    if (reduce) return;
+    if (reduce || isMobile) {
+      if (rafRef.current !== undefined) cancelAnimationFrame(rafRef.current);
+      return;
+    }
 
     const tick = () => {
       if (targetRef.current !== null) {
@@ -140,7 +151,9 @@ export default function Stack() {
                 aria-current={isActive}
                 className="group absolute left-1/2 top-1/2 w-[430px] cursor-pointer text-left max-md:static max-md:left-auto max-md:top-auto max-md:w-full max-md:!opacity-100 max-md:[transform:none!important] max-md:[filter:none!important]"
                 style={
-                  reduce
+                  isMobile
+                    ? undefined
+                    : reduce
                     ? {
                         position: "absolute",
                         left: "50%",
