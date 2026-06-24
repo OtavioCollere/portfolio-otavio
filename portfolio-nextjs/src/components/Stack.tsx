@@ -47,6 +47,22 @@ function TechChip({ label }: { label: string }) {
 
 const SPEED = 0.008; // cards por frame a 60fps → ~0.48 cards/s, ida e volta em ~17s
 
+const CARDS_PER_SECOND = SPEED * 60;
+
+const wrap = (value: number, total: number) => ((value % total) + total) % total;
+
+const circularDistance = (from: number, to: number, total: number) => {
+  const diff = to - from;
+  if (diff > total / 2) return diff - total;
+  if (diff < -total / 2) return diff + total;
+  return diff;
+};
+
+const smoothstep = (value: number) => {
+  const x = Math.max(0, Math.min(1, value));
+  return x * x * (3 - 2 * x);
+};
+
 export default function Stack() {
   // useReducedMotion retorna null no servidor — usar false como valor inicial
   // garante que servidor e cliente rendam o mesmo HTML antes da hidratação.
@@ -74,37 +90,33 @@ export default function Stack() {
   const total = stack.length;
 
   const offsetRef = useRef<number>(Math.floor(total / 2));
-  const dirRef = useRef<number>(1);
   const targetRef = useRef<number | null>(null);
   const rafRef = useRef<number | undefined>(undefined);
+  const lastTickRef = useRef<number | undefined>(undefined);
+  const pausedRef = useRef(false);
   const [offset, setOffset] = useState(offsetRef.current);
 
   useEffect(() => {
-    if (reduce || isMobile) {
+    if (isMobile) {
       if (rafRef.current !== undefined) cancelAnimationFrame(rafRef.current);
       return;
     }
 
-    const tick = () => {
+    const tick = (time: number) => {
+      const lastTick = lastTickRef.current ?? time;
+      const delta = Math.min((time - lastTick) / 1000, 0.08);
+      lastTickRef.current = time;
+
       if (targetRef.current !== null) {
         const diff = targetRef.current - offsetRef.current;
         if (Math.abs(diff) < 0.005) {
-          offsetRef.current = targetRef.current;
-          if (offsetRef.current >= total - 1) dirRef.current = -1;
-          else if (offsetRef.current <= 0) dirRef.current = 1;
+          offsetRef.current = wrap(targetRef.current, total);
           targetRef.current = null;
         } else {
-          offsetRef.current += diff * 0.1;
+          offsetRef.current += diff * Math.min(delta * 7, 0.35);
         }
-      } else {
-        offsetRef.current += SPEED * dirRef.current;
-        if (offsetRef.current >= total - 1) {
-          offsetRef.current = total - 1;
-          dirRef.current = -1;
-        } else if (offsetRef.current <= 0) {
-          offsetRef.current = 0;
-          dirRef.current = 1;
-        }
+      } else if (!pausedRef.current) {
+        offsetRef.current = wrap(offsetRef.current + CARDS_PER_SECOND * delta, total);
       }
       setOffset(offsetRef.current);
       rafRef.current = requestAnimationFrame(tick);
@@ -113,14 +125,25 @@ export default function Stack() {
     rafRef.current = requestAnimationFrame(tick);
     return () => {
       if (rafRef.current !== undefined) cancelAnimationFrame(rafRef.current);
+      lastTickRef.current = undefined;
     };
-  }, [reduce, isMobile, total]);
+  }, [isMobile, total]);
 
   const go = (i: number) => {
-    targetRef.current = Math.max(0, Math.min(total - 1, i));
+    const current = wrap(offsetRef.current, total);
+    const target = wrap(i, total);
+    targetRef.current = current + circularDistance(current, target, total);
   };
 
-  const active = Math.round(offset);
+  const pause = () => {
+    pausedRef.current = true;
+  };
+
+  const resume = () => {
+    pausedRef.current = false;
+  };
+
+  const active = wrap(Math.round(offset), total);
 
   return (
     <section
@@ -143,14 +166,22 @@ export default function Stack() {
           style={{ perspective: "1700px" }}
         >
           {stack.map((cat, i) => {
-            const d = i - offset;
+            const d = circularDistance(offset, i, total);
             const ad = Math.abs(d);
             const isActive = i === active;
+            const focus = smoothstep(1 - Math.min(ad, 1));
+            const bgAlpha = 0.82 + focus * 0.14;
+            const borderAlpha = 0.08 + focus * 0.27;
+            const glowAlpha = focus * 0.45;
+            const ambientShadowAlpha = 0.7 - focus * 0.25;
+            const opacity = Math.max(0, 1 - ad * 0.42);
             return (
               <button
                 key={cat.category}
                 type="button"
                 onClick={() => go(i)}
+                onPointerEnter={pause}
+                onPointerLeave={resume}
                 aria-label={`Mostrar ${cat.category}`}
                 aria-current={isActive}
                 className="group absolute left-1/2 top-1/2 w-[430px] cursor-pointer text-left max-md:static max-md:left-auto max-md:top-auto max-md:w-full max-md:!opacity-100 max-md:[transform:none!important] max-md:[filter:none!important]"
@@ -163,24 +194,25 @@ export default function Stack() {
                         left: "50%",
                         top: "50%",
                         transform: `translate(-50%,-50%) translateX(${d * 330}px)`,
-                        opacity: ad > 2 ? 0 : 1,
-                        zIndex: 50 - Math.round(ad),
+                        opacity,
+                        zIndex: Math.round(1000 - ad * 100),
                       }
                     : {
                         transform: `translate(-50%, -50%) translateX(${d * 330}px) translateZ(${-ad * 200}px) rotateY(${d * -22}deg) scale(${Math.max(0.7, 1 - ad * 0.08)})`,
-                        opacity: Math.max(0.3, 1 - ad * 0.28),
+                        opacity,
                         filter: `brightness(${Math.max(0.5, 1 - ad * 0.17)})`,
-                        zIndex: Math.round(50 - ad * 10),
+                        zIndex: Math.round(1000 - ad * 100),
                         willChange: "transform",
                       }
                 }
               >
                 <div
-                  className={`box-border min-h-[300px] rounded-[18px] border p-[30px] backdrop-blur transition-colors ${
-                    isActive
-                      ? "border-accent/35 bg-[rgba(27,30,37,0.96)] shadow-[0_30px_80px_-30px_rgba(52,211,153,0.45)]"
-                      : "border-line bg-[rgba(27,30,37,0.82)] shadow-[0_24px_60px_-34px_rgba(0,0,0,0.7)]"
-                  }`}
+                  className="box-border min-h-[300px] rounded-[18px] border p-[30px] backdrop-blur"
+                  style={{
+                    borderColor: `rgba(52, 211, 153, ${borderAlpha})`,
+                    backgroundColor: `rgba(27, 30, 37, ${bgAlpha})`,
+                    boxShadow: `0 ${24 + focus * 6}px ${60 + focus * 20}px -34px rgba(0, 0, 0, ${ambientShadowAlpha}), 0 30px 80px -30px rgba(52, 211, 153, ${glowAlpha})`,
+                  }}
                 >
                   <div className="mb-[22px] flex items-center gap-2.5">
                     <span className="font-mono text-xs tracking-widest text-accent">
@@ -200,7 +232,11 @@ export default function Stack() {
         </div>
 
         {/* Controles */}
-        <div className="mt-2 flex items-center justify-center gap-[18px] max-md:hidden">
+        <div
+          className="mt-2 flex items-center justify-center gap-[18px] max-md:hidden"
+          onPointerEnter={pause}
+          onPointerLeave={resume}
+        >
           <button
             type="button"
             onClick={() => go(active - 1)}

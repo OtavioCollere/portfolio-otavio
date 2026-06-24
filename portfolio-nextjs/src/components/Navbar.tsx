@@ -69,20 +69,25 @@ export default function Navbar() {
 
         {/* Desktop links */}
         <ul className="hidden items-center gap-1 md:flex">
-          {navItems.map((item) => (
-            <li key={item.href}>
-              <a
-                href={item.href}
-                className={`rounded-md px-3 py-2 text-sm transition-colors ${
-                  active === item.href
-                    ? "text-accent"
-                    : "text-white/55 hover:text-white"
-                }`}
-              >
-                {item.label}
-              </a>
-            </li>
-          ))}
+          {navItems.map((item) => {
+            const isContact = item.href === "#contato";
+            return (
+              <li key={item.href}>
+                <a
+                  href={isContact ? profile.links.whatsapp : item.href}
+                  target={isContact ? "_blank" : undefined}
+                  rel={isContact ? "noopener noreferrer" : undefined}
+                  className={`rounded-md px-3 py-2 text-sm transition-colors ${
+                    active === item.href
+                      ? "text-accent"
+                      : "text-white/55 hover:text-white"
+                  }`}
+                >
+                  {item.label}
+                </a>
+              </li>
+            );
+          })}
         </ul>
 
         <div className="flex items-center gap-2">
@@ -105,7 +110,9 @@ export default function Navbar() {
             <LinkedInIcon className="h-[18px] w-[18px]" />
           </a>
           <a
-            href="#contato"
+            href={profile.links.whatsapp}
+            target="_blank"
+            rel="noopener noreferrer"
             className="ml-1 hidden rounded-md border border-accent/30 bg-accent/10 px-3.5 py-2 text-sm font-medium text-accent transition-colors hover:bg-accent/20 sm:block"
           >
             Contato
@@ -151,17 +158,22 @@ export default function Navbar() {
             className="overflow-hidden border-t border-line bg-ink-950/95 backdrop-blur-xl md:hidden"
           >
             <ul className="flex flex-col gap-1 px-5 py-4">
-              {navItems.map((item) => (
-                <li key={item.href}>
-                  <a
-                    href={item.href}
-                    onClick={() => setOpen(false)}
-                    className="block rounded-lg px-3 py-3 text-base text-white/75 transition-colors hover:bg-white/5 hover:text-white"
-                  >
-                    {item.label}
-                  </a>
-                </li>
-              ))}
+              {navItems.map((item) => {
+                const isContact = item.href === "#contato";
+                return (
+                  <li key={item.href}>
+                    <a
+                      href={isContact ? profile.links.whatsapp : item.href}
+                      target={isContact ? "_blank" : undefined}
+                      rel={isContact ? "noopener noreferrer" : undefined}
+                      onClick={() => setOpen(false)}
+                      className="block rounded-lg px-3 py-3 text-base text-white/75 transition-colors hover:bg-white/5 hover:text-white"
+                    >
+                      {item.label}
+                    </a>
+                  </li>
+                );
+              })}
             </ul>
           </motion.div>
         ) : null}

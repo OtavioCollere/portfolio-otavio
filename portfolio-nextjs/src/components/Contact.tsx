@@ -36,14 +36,22 @@ export default function Contact() {
         <Reveal delay={0.12}>
           <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
             <a
-              href={links.linkedin}
+              href={links.whatsapp}
               target="_blank"
               rel="noopener noreferrer"
               className="group inline-flex items-center gap-2.5 rounded-lg bg-accent px-5 py-3 text-sm font-semibold text-ink-950 transition-all hover:bg-accent-soft hover:shadow-[0_8px_30px_-8px_rgba(52,211,153,0.5)]"
             >
+              WhatsApp
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+            </a>
+            <a
+              href={links.linkedin}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2.5 rounded-lg border border-line bg-white/[0.03] px-5 py-3 text-sm font-semibold text-white transition-colors hover:border-white/20 hover:bg-white/[0.06]"
+            >
               <LinkedInIcon className="h-[18px] w-[18px]" />
               LinkedIn
-              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
             </a>
             <a
               href={links.github}

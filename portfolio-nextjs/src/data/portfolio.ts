@@ -31,6 +31,7 @@ export type Profile = {
   links: {
     linkedin: string;
     github: string;
+    whatsapp: string;
     /** Deixe vazio ("") para esconder o botão de e-mail. */
     email: string;
   };
@@ -99,13 +100,14 @@ export const profile: Profile = {
     { value: "+3 anos", label: "de experiência" },
     { value: "62%", label: "redução no tempo de autenticação" },
     { value: "16s → <1s", label: "otimização de consultas críticas" },
-    { value: "1M+", label: "usuários ativos atendidos" },
+    { value: "1M+", label: "usuários na plataforma" },
   ],
   resumeHref: "/otavio-takaki-cv-ptf.pdf",
   photo: "/otavio-foto.jfif",
   links: {
     linkedin: "https://www.linkedin.com/in/otavio-takaki",
     github: "https://github.com/OtavioCollere",
+    whatsapp: "https://wa.me/5541996335828",
     email: "", // Sem e-mail no arquivo enviado → botão de e-mail fica oculto.
   },
 };
@@ -128,10 +130,12 @@ export const experiences: ExperienceItem[] = [
       "Criei e integrei o módulo de Equipamentos, conectando dados operacionais ao fluxo da plataforma e estruturando o controle de cadastro, uso e rastreabilidade de recursos.",
       "Implementei o módulo de Kits de Materiais, estruturando fluxos de composição, consulta e utilização de insumos nos processos produtivos.",
       "Desenvolvi sistema de NPS para coleta de feedback de usuários, fornecendo ao time dados para priorização de melhorias e identificação de pontos críticos de experiência.",
+      "Desenvolvi chatbot inteligente com modelo OpenAI para responder perguntas de FAQ e consultas sobre o sistema, utilizando cache com Redis para reduzir latência e chamadas repetidas.",
+      "Implementei rate limit com Redis para proteger endpoints, controlar volume de requisições e aumentar a resiliência da aplicação.",
       "Evoluí integrações com APIs externas aplicando o padrão Strategy para desacoplar regras de negócio por ERP, melhorando rastreabilidade e manutenibilidade.",
       "Atuo na resolução de tickets de produção: análise de dados, integrações, regras de negócio e comportamento da aplicação em ambiente real.",
     ],
-    stack: ["Node.js", "React.js", "TypeScript", "PostgreSQL", "APIs REST", "Git"],
+    stack: ["Node.js", "React.js", "TypeScript", "PostgreSQL", "Redis", "OpenAI", "APIs REST", "Git"],
   },
   {
     company: "Podium Educação",
@@ -140,7 +144,7 @@ export const experiences: ExperienceItem[] = [
     period: "Dez 2025 – Fev 2026",
     location: "Curitiba, PR · Presencial",
     summary:
-      "Modernização da infraestrutura de autenticação de uma plataforma EdTech com mais de 1.000.000 de usuários ativos, liderando a migração de um sistema legado em Laravel para Auth Service + API Gateway em Node.js.",
+      "Modernização da infraestrutura de autenticação da plataforma Cashbarber, da Podium Educação, com mais de 1.000.000 de usuários ativos, liderando a migração de um sistema legado em Laravel para Auth Service + API Gateway em Node.js.",
     highlights: [
       "Reduzi o tempo médio de autenticação em 62% (de 1,8s para 0,68s) após implementação do gateway externo e eliminação de validações redundantes.",
       "Centralizei o fluxo de autenticação, reduzindo de 6 pontos de validação espalhados para 1 serviço único, simplificando manutenção e aumentando confiabilidade.",
@@ -299,7 +303,7 @@ export const projects: Project[] = [
       "GitHub Actions",
       "Vitest",
     ],
-    repo: "https://github.com/OtavioCollere/clinic-api",
+    repo: "https://github.com/OtavioCollere/saas-clinic",
   },
 
   {
@@ -334,7 +338,7 @@ export const projects: Project[] = [
       "Biome",
       "pnpm",
     ],
-    repo: "",
+    repo: "https://github.com/OtavioCollere/clinic-full-stack",
   },
 
   {
@@ -373,7 +377,7 @@ export const projects: Project[] = [
       "Google Cloud Run",
       "GitHub Actions",
     ],
-    repo: "",
+    repo: "https://github.com/OtavioCollere/lumi-energy-invoices",
   },
 
   {
