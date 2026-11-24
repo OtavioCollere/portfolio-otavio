@@ -26,9 +26,22 @@ const ICON_SLUGS: Record<string, string> = {
   "GitHub Actions": "githubactions",
   "Google Cloud (GCP)": "googlecloud",
   Pulumi: "pulumi",
-  "AWS (ECS Fargate, S3/R2, ALB)": "amazonwebservices",
+  "AWS (S3)": "amazonwebservices",
+  MySQL: "mysql",
+  "Kubernetes (GKE)": "kubernetes",
+  Terraform: "terraform",
+  "Argo CD": "argo",
+  Helm: "helm",
+  Kustomize: "kubernetes",
+  Linux: "linux",
+  Bash: "gnubash",
+  Prometheus: "prometheus",
+  "Cloud Monitoring": "googlecloud",
+  k6: "k6",
+  "Next.js": "nextdotjs",
+  "Tailwind CSS": "tailwindcss",
 };
-const FORCE_WHITE = new Set(["prisma", "express", "fastify", "amazonwebservices"]);
+const FORCE_WHITE = new Set(["prisma", "express", "fastify", "amazonwebservices", "nextdotjs", "gnubash", "helm"]);
 
 function TechChip({ label }: { label: string }) {
   const slug = ICON_SLUGS[label];

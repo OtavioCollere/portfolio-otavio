@@ -12,11 +12,11 @@ import {
 
 const codeLines: { t: string; c?: string }[] = [
   { t: "const engineer = {" },
-  { t: "  role: 'Full Stack Pleno'," },
-  { t: "  core: ['Node.js', 'NestJS', 'TS']," },
-  { t: "  focus: ['APIs', 'integrações']," },
-  { t: "  arch: ['Clean Arch', 'DDD', 'SOLID']," },
-  { t: "  ship: () => scalableProducts()," },
+  { t: "  role: 'Backend & Cloud'," },
+  { t: "  core: ['Node.js', 'TS', 'PostgreSQL']," },
+  { t: "  cloud: ['GKE', 'Terraform', 'Argo CD']," },
+  { t: "  focus: ['performance', 'infra']," },
+  { t: "  ship: () => measureThenOptimize()," },
   { t: "}" },
 ];
 

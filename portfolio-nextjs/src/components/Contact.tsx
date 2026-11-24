@@ -28,7 +28,7 @@ export default function Contact() {
             Vamos construir algo escalável juntos.
           </h2>
           <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-white/60 md:text-lg">
-            Aberto a oportunidades full stack e back-end. Me chame no LinkedIn ou
+            Aberto a oportunidades em backend e cloud. Me chame no LinkedIn ou
             veja meu código no GitHub.
           </p>
         </Reveal>

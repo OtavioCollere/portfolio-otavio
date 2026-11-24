@@ -64,7 +64,7 @@ function Portrait() {
         />
         <div className="absolute bottom-3.5 left-4 z-30">
           <div className="font-display text-[15px] font-semibold text-white">Otavio Collere</div>
-          <div className="font-mono text-[11px] text-accent">// Full Stack Pleno</div>
+          <div className="font-mono text-[11px] text-accent">// Backend & Cloud Engineer</div>
         </div>
       </div>
       {/* Detalhes técnicos nos cantos */}
